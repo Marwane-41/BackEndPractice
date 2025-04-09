@@ -1,20 +1,34 @@
-/**
- * @param {number[][]} matrix
- * @return {number[]}
- */
+const http = require('http')
+const fs  = require('fs')
 
-var spiralOrder = function(matrix) {
-        
-    // create length for the variables : 
-   
-    let x = matrix.length;
-    let y = matrix[0].length;
+
+let users = [
+    { id: 1, name: 'John Doe' },
+    { id: 2, name: 'Jane Smith' },
+];
+
+
+const server = http.createServer((req,res)=>{
+
+    // when link has / 
+    if(req.url === '/'){
+        const homepage = fs.readFileSync('./index.html' ,'utf-8');
+        res.write(homepage)
+        res.end()        
+    }
+    else if ( req.url === '/api/users' && req.method === 'GET'){
+        res.writeHead(200, {'content-type':'application/json'});
+        res.write(JSON.stringify(users));
+        res.end();
+    }
     
-    console.log(x);
-    console.log(y);
+    else{
+        res.writeHead(404, { 'Content-Type': 'text/html' });
+        res.write('<h1> Page not found </h1>')
+        res.end()        
+    }
 
-    console.log(matrix[1]);
-};
 
+});
 
-spiralOrder([[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+server.listen(3000);
